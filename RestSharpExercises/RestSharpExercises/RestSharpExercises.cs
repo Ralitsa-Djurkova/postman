@@ -14,10 +14,10 @@ namespace RestSharpExercises
         private const string url = "https://api.github.com";
         private RestClient client;
         private RestRequest request;
-        private const string username = "Ralitsa-Djurkova";
-        private const string token = "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";
+        private const string username = "username";
+        private const string token = "token";
 
-        private string singleIssueURL = "/repos/Ralitsa-Djurkova/postman/issues/{id}";
+        private string singleIssueURL = "/repos/username/postman/issues/{id}";
 
         [SetUp]
         public void Setup()
@@ -38,7 +38,7 @@ namespace RestSharpExercises
         [Test]
         public void Test_All_Issues()
         {
-            this.request = new RestRequest("/repos/Ralitsa-Djurkova/postman/issues");
+            this.request = new RestRequest("/repos/username/postman/issues");
             var response = this.client.Execute(request);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             var issues = JsonSerializer.Deserialize<List<Issues>>(response.Content);
@@ -55,8 +55,8 @@ namespace RestSharpExercises
         }
         private async Task<Issues> CreateIssue(string title, string body)
         {
-            this.client.Authenticator = new HttpBasicAuthenticator("Ralitsa-Djurkova", "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");
-            var request = new RestRequest("/repos/Ralitsa-Djurkova/postman/issues");
+            this.client.Authenticator = new HttpBasicAuthenticator("username", "token");
+            var request = new RestRequest("/repos/username/postman/issues");
             request.AddBody(new { body, title });
             var response = await this.client.ExecuteAsync(request, Method.Post);
             var issue = JsonSerializer.Deserialize<Issues>(response.Content);
@@ -76,8 +76,8 @@ namespace RestSharpExercises
         [Test]
         public async Task Test_Create_GitHubIssueAsync_UnauthenticatedPost()
         {
-            this.request = new RestRequest("/repos/Ralitsa-Djurkova/postman/issues");
-            this.client.Authenticator = new HttpBasicAuthenticator("Ralitsa-Djurkova", "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1");
+            this.request = new RestRequest("/repos/username/postman/issues");
+            this.client.Authenticator = new HttpBasicAuthenticator("username", "token");
             string title = "New issue from RestSharp";
             string body = "Some body here";
             var response = await this.client.ExecuteAsync(request, Method.Post);
@@ -88,7 +88,7 @@ namespace RestSharpExercises
         [Test]
         public async Task Test_Create_InvalidPost_with_Missintitle()
         {
-            this.request = new RestRequest("/repos/Ralitsa-Djurkova/postman/issues");
+            this.request = new RestRequest("/repos/username/postman/issues");
             
             string title = " ";
             string body = "Some body here";
@@ -99,7 +99,7 @@ namespace RestSharpExercises
         }
         private async Task<Issues> PatchIssue(string title, string body)
         {
-            var request = new RestRequest("/repos/Ralitsa-Djurkova/postman/issie/76");
+            var request = new RestRequest("/repos/username/postman/issie/76");
             request.AddBody(new { body, title });
             var response = await this.client.ExecuteAsync(request, Method.Patch);
             var issue = JsonSerializer.Deserialize<Issues>(response.Content);
@@ -108,7 +108,7 @@ namespace RestSharpExercises
         [Test]
         public async Task Test_Delete_With_Missing_Authenticator()
         {
-            var request = new RestRequest("/repos/Ralitsa-Djurkova/postman/issues");
+            var request = new RestRequest("/repos/username/postman/issues");
             request.AddUrlSegment("id", 7);
 
             //Act
@@ -123,7 +123,7 @@ namespace RestSharpExercises
         {
             this.client.Authenticator = new HttpBasicAuthenticator(username, token);
 
-            this.request = new RestRequest("/repos/Ralitsa-Djurkova/postman/issues/7");
+            this.request = new RestRequest("/repos/username/postman/issues/7");
             request.AddUrlSegment("id", 7);
 
             var newTitle = "Change title from restSharp";
@@ -142,7 +142,7 @@ namespace RestSharpExercises
         [Test]
         public async Task Test_With_Missing_Authenticator()
         {
-            this.request = new RestRequest("repos/Ralitsa_Djurkova/postman/issues/5");
+            this.request = new RestRequest("repos/username/postman/issues/5");
             request.AddUrlSegment("id", 5);
 
             var newTitle = "Changed title from RestSharp";
